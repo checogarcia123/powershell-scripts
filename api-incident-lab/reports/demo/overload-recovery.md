@@ -1,0 +1,91 @@
+# Response completed
+
+Mode: simulated
+Scenario: overload-recovery
+UTC: 2026-10-07T01:29:37+00:00
+
+The response reports a completed operation. The lab does not assess generated content quality.
+
+## Recommended next steps
+
+1. Record the completed response and request ID.
+2. Validate the result against the application's requirements before closing a real incident.
+
+## Incident handover
+
+```text
+Scenario: overload-recovery (simulated)
+Observed: HTTP 200; attempts=2; error_code=none; response_status=completed.
+Interpretation: Response completed. The response reports a completed operation. The lab does not assess generated content quality.
+Recovery decision: Completed; no additional request needed.
+Trace: request_id=req_demo_overload_2; client_request_id=265bc5e8-22cf-41bc-8f2f-d1978317578e
+Next: Record the completed response and request ID.
+Business impact and customer scope: not established by this technical probe.
+```
+
+## Sanitized evidence
+
+```json
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-10-07T01:29:37+00:00",
+  "mode": "simulated",
+  "scenario": "overload-recovery",
+  "description": "A temporary server overload is followed by a completed response after bounded backoff.",
+  "diagnosis": {
+    "category": "completed",
+    "title": "Response completed",
+    "summary": "The response reports a completed operation. The lab does not assess generated content quality.",
+    "retryable": false,
+    "next_steps": [
+      "Record the completed response and request ID.",
+      "Validate the result against the application's requirements before closing a real incident."
+    ]
+  },
+  "observations": [
+    {
+      "attempt": 1,
+      "http_status": 503,
+      "client_request_id": "b12b55f5-2f1d-406c-88fe-bb84897792a9",
+      "duration_ms": 0,
+      "failure_kind": null,
+      "error_code": "server_is_overloaded",
+      "error_type": null,
+      "error_message": "The server is overloaded.",
+      "response_status": null,
+      "incomplete_reason": null,
+      "headers": {
+        "x-request-id": "req_demo_overload_1",
+        "retry-after": "1"
+      },
+      "valid_json": true
+    },
+    {
+      "attempt": 2,
+      "http_status": 200,
+      "client_request_id": "265bc5e8-22cf-41bc-8f2f-d1978317578e",
+      "duration_ms": 0,
+      "failure_kind": null,
+      "error_code": null,
+      "error_type": null,
+      "error_message": null,
+      "response_status": "completed",
+      "incomplete_reason": null,
+      "headers": {
+        "x-request-id": "req_demo_overload_2"
+      },
+      "valid_json": true
+    }
+  ],
+  "retry_decisions": [
+    {
+      "after_attempt": 1,
+      "delay_seconds": 1.0,
+      "source": "Retry-After",
+      "action": "retry"
+    }
+  ],
+  "stop_reason": "Completed; no additional request needed.",
+  "logging_policy": "No API credentials, input prompts, raw response bodies, or generated content are saved."
+}
+```

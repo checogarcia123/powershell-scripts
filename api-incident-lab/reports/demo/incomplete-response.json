@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-10-07T01:29:37+00:00",
+  "mode": "simulated",
+  "scenario": "incomplete-response",
+  "description": "HTTP 200 is not enough to close the incident when the response state is incomplete.",
+  "diagnosis": {
+    "category": "incomplete",
+    "title": "Response is incomplete",
+    "summary": "The request returned HTTP success but the response reports incomplete generation.",
+    "retryable": false,
+    "next_steps": [
+      "Inspect incomplete_details.reason; a token limit may require a different output budget.",
+      "Explain the incomplete result and decide whether a revised request is appropriate.",
+      "Do not report HTTP 200 alone as a fully successful result."
+    ]
+  },
+  "observations": [
+    {
+      "attempt": 1,
+      "http_status": 200,
+      "client_request_id": "5d9e7e7b-2fa0-47a5-8f06-8740d4c1fab3",
+      "duration_ms": 0,
+      "failure_kind": null,
+      "error_code": null,
+      "error_type": null,
+      "error_message": null,
+      "response_status": "incomplete",
+      "incomplete_reason": "max_output_tokens",
+      "headers": {
+        "x-request-id": "req_demo_incomplete"
+      },
+      "valid_json": true
+    }
+  ],
+  "retry_decisions": [],
+  "stop_reason": "No automatic retry: investigate or correct the issue first.",
+  "logging_policy": "No API credentials, input prompts, raw response bodies, or generated content are saved."
+}

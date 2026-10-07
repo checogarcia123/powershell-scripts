@@ -1,0 +1,68 @@
+[
+  {
+    "id": "completed", "title": "Completed response", "description": "A normal completed response establishes the baseline.",
+    "responses": [{"status": 200, "headers": {"x-request-id": "req_demo_completed"}, "body": {"status": "completed"}}]
+  },
+  {
+    "id": "authentication", "title": "401 · Invalid API key", "description": "A key rejected by the service is a configuration issue, not a retry problem.",
+    "responses": [{"status": 401, "headers": {"x-request-id": "req_demo_auth"}, "body": {"error": {"type": "invalid_request_error", "code": "invalid_api_key", "message": "Incorrect API key provided: sk-demo-DO-NOT-USE"}}}]
+  },
+  {
+    "id": "access-denied", "title": "403 · Access denied", "description": "Inspect access and region evidence rather than guessing the cause from the status alone.",
+    "responses": [{"status": 403, "headers": {"x-request-id": "req_demo_access"}, "body": {"error": {"code": "unsupported_country_region_territory", "message": "Access from this region is not supported."}}}]
+  },
+  {
+    "id": "model-not-found", "title": "404 · Model or access mismatch", "description": "A model identifier may be incorrect or unavailable to the requesting project.",
+    "responses": [{"status": 404, "headers": {"x-request-id": "req_demo_model"}, "body": {"error": {"type": "invalid_request_error", "code": "model_not_found", "message": "The requested fixture model is not available to this project."}}}]
+  },
+  {
+    "id": "invalid-request", "title": "400 · Invalid request parameter", "description": "Correct the invalid field before making another request.",
+    "responses": [{"status": 400, "headers": {"x-request-id": "req_demo_payload"}, "body": {"error": {"type": "invalid_request_error", "code": "invalid_value", "message": "The max_output_tokens value is invalid."}}}]
+  },
+  {
+    "id": "rate-limit-recovery", "title": "429 · Rate limit, then recovery", "description": "A temporary rate limit supplies Retry-After. The simulated clock advances before one successful retry.",
+    "responses": [
+      {"status": 429, "headers": {"x-request-id": "req_demo_rate_1", "retry-after": "2", "x-ratelimit-remaining-requests": "0"}, "body": {"error": {"type": "requests", "code": "rate_limit_exceeded", "message": "Request rate limit reached."}}},
+      {"status": 200, "headers": {"x-request-id": "req_demo_rate_2"}, "body": {"status": "completed"}}
+    ]
+  },
+  {
+    "id": "credits-exhausted", "title": "429 · Credits exhausted", "description": "The same HTTP status has a different recovery path: replenishing credits or resolving billing. Retry-After does not override the error code.",
+    "responses": [{"status": 429, "headers": {"x-request-id": "req_demo_credit", "retry-after": "1"}, "body": {"error": {"type": "insufficient_quota", "code": "credit_balance_exhausted", "message": "Credit balance exhausted."}}}]
+  },
+  {
+    "id": "project-spend-limit", "title": "429 · Project spending limit", "description": "Project-level spending policy requires an account-owner action, not a retry loop.",
+    "responses": [{"status": 429, "headers": {"x-request-id": "req_demo_spend"}, "body": {"error": {"code": "project_spend_limit_exceeded", "message": "Project spending limit reached."}}}]
+  },
+  {
+    "id": "long-retry-delay", "title": "429 · Delay exceeds time budget", "description": "A 120-second server delay exceeds this tool's 30-second budget. The request is deferred instead of retried early.",
+    "responses": [{"status": 429, "headers": {"x-request-id": "req_demo_defer", "retry-after": "120"}, "body": {"error": {"code": "slow_down", "message": "Reduce traffic and retry later."}}}]
+  },
+  {
+    "id": "overload-recovery", "title": "503 · Server overload, then recovery", "description": "A temporary server overload is followed by a completed response after bounded backoff.",
+    "responses": [
+      {"status": 503, "headers": {"x-request-id": "req_demo_overload_1", "retry-after": "1"}, "body": {"error": {"code": "server_is_overloaded", "message": "The server is overloaded."}}},
+      {"status": 200, "headers": {"x-request-id": "req_demo_overload_2"}, "body": {"status": "completed"}}
+    ]
+  },
+  {
+    "id": "persistent-server-error", "title": "500 · Attempt limit reached", "description": "Three failed attempts stop the recovery loop and produce a handover.",
+    "responses": [{"status": 500, "headers": {"x-request-id": "req_demo_server"}, "body": {"error": {"type": "server_error", "message": "An internal error occurred."}}}]
+  },
+  {
+    "id": "timeout", "title": "Timeout · Outcome unknown", "description": "A timeout does not prove the POST was rejected. The tool avoids automatic replay and records the client request ID.",
+    "responses": [{"failure_kind": "timeout"}]
+  },
+  {
+    "id": "connection-failure", "title": "Connection failure · Investigate", "description": "A generic connection failure is insufficient evidence to diagnose DNS, a firewall, or a service outage.",
+    "responses": [{"failure_kind": "connection"}]
+  },
+  {
+    "id": "incomplete-response", "title": "200 · Incomplete generation", "description": "HTTP 200 is not enough to close the incident when the response state is incomplete.",
+    "responses": [{"status": 200, "headers": {"x-request-id": "req_demo_incomplete"}, "body": {"status": "incomplete", "incomplete_details": {"reason": "max_output_tokens"}}}]
+  },
+  {
+    "id": "invalid-response", "title": "200 · Non-JSON response", "description": "A proxy or intermediary may return HTML. The tool flags a protocol issue without logging the raw body.",
+    "responses": [{"status": 200, "headers": {"x-request-id": "req_demo_protocol"}, "body": "<html>Unexpected proxy response</html>"}]
+  }
+]
